@@ -1,0 +1,13 @@
+build:
+  script:
+  - "make test"
+  stage: "build"
+default:
+  timeout: "1h"
+stages:
+- "build"
+- "test"
+test:
+  script:
+  - "make test"
+  stage: "test"

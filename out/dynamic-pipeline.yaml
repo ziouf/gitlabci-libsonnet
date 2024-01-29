@@ -1,0 +1,35 @@
+"build:a":
+  script:
+  - "cd a"
+  - "make test"
+  stage: "build"
+"build:b":
+  script:
+  - "cd b"
+  - "make test"
+  stage: "build"
+"build:c":
+  script:
+  - "cd c"
+  - "make test"
+  stage: "build"
+default:
+  timeout: "1h"
+stages:
+- "build"
+- "test"
+"test:a":
+  script:
+  - "cd a"
+  - "make test"
+  stage: "test"
+"test:b":
+  script:
+  - "cd b"
+  - "make test"
+  stage: "test"
+"test:c":
+  script:
+  - "cd c"
+  - "make test"
+  stage: "test"

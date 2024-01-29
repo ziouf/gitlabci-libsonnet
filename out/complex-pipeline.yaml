@@ -1,0 +1,25 @@
+"build:first":
+  script:
+  - "cd first"
+  - "make test"
+  stage: "build"
+"build:second":
+  script:
+  - "cd second"
+  - "make test"
+  stage: "build"
+default:
+  timeout: "1h"
+stages:
+- "build"
+- "test"
+"test:first":
+  script:
+  - "cd first"
+  - "make test"
+  stage: "test"
+"test:second":
+  script:
+  - "cd second"
+  - "make test"
+  stage: "test"
