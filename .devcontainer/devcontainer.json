@@ -1,0 +1,20 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/ubuntu
+{
+	"name": "Jsonnet",
+	"build": {"dockerfile": "Dockerfile"},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"GitHub.copilot",
+				"GitHub.copilot-chat",
+				"Grafana.vscode-jsonnet"
+			]
+		}
+	},
+	"initializeCommand": {
+		"extractGitGlobals": "git config -l --global --include > .gitconfig.global",
+		"extractGitLocals": "git config -l --local --include > .gitconfig.local"
+	},
+	"postAttachCommand": "/bin/bash .devcontainer/post-attach.sh"
+}
