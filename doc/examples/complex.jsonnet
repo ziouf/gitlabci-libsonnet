@@ -1,10 +1,9 @@
-local gl = import "../gitlabci.libsonnet";
+local gl = import "../../gitlabci.libsonnet";
 
-function(modules="", sep=',')
 {
-    modules:: std.split(modules, sep),
+    modules:: ["first", "second"],
 
-    "dynamic-pipeline.yaml": std.manifestYamlDoc(
+    "complex-pipeline.yaml":
          gl.pipeline.new(
             stages=["build", "test"],
         )
@@ -21,8 +20,6 @@ function(modules="", sep=',')
                 script=["cd %s" % [module], "make test"],
             ),
             for module in $.modules
-        }), 
-        indent_array_in_object=false, 
-        quote_keys=false,
-    ),
+        })
+        .toYaml(),
 }

@@ -1,131 +1,53 @@
-# gitlabci-jsonnet
+# gitlabci-libsonnet
 
-Jsonnet library to generate GitlabCI pipeline.
+A Jsonnet library for dynamically generating GitLab CI pipelines.
 
-## Origin story
+## Overview
 
-I created this library because I needed to generate a dynamic downstream pipeline in the case of a monorepo. We wanted to run only the build/test/package jobs for modules that had changed. In the case of a library, I wanted it to trigger the jobs for the modules affected by the change to this library. 
-We had developed a utility to detect which modules were impacted, so all we had to do was generate the pipeline dynamically based on the impacted modules.
+This library helps you generate GitLab CI pipeline configurations programmatically using Jsonnet. It's particularly useful for monorepos where you want to selectively run jobs only for modules that have changed or that are affected by changes.
 
-## Use case
+## Origin Story
 
-Generate a pipeline file programmatically
+This library was created to solve the challenge of handling dynamic downstream pipelines in a monorepo structure. The goal was to:
+- Run build/test/package jobs only for modules that changed
+- Trigger jobs for modules affected by changes to shared libraries
+- Use a utility to detect impacted modules and generate appropriate pipelines
 
-## Usage
+## Prerequisites
 
-- simple case
+- [Jsonnet](https://jsonnet.org/) installed on your system.
+- [Jsonnet Bundler](https://github.com/jsonnet-bundler/jsonnet-bundler) installed for managing dependencies.
 
-```sh
-jsonnet -m out -c -S examples/simple.jsonnet
-```
+## Installation
 
-```yaml
-build:
-  script:
-  - "make test"
-  stage: "build"
-default:
-  timeout: "1h"
-stages:
-- "build"
-- "test"
-test:
-  script:
-  - "make test"
-  stage: "test"
-```
-
-- complex case
+You can install this library for your jsonnet project using [jsonnet-bundler](https://github.com/jsonnet-bundler/jsonnet-bundler) or by cloning the repository directly.
 
 ```sh
-jsonnet -m out -c -S examples/complex.jsonnet
+# Using jsonnet-bundler
+jb install github.com/ziouf/gitlabci-libsonnet
 ```
 
-```yaml
-"build:first":
-  script:
-  - "cd first"
-  - "make test"
-  stage: "build"
-"build:second":
-  script:
-  - "cd second"
-  - "make test"
-  stage: "build"
-default:
-  timeout: "1h"
-stages:
-- "build"
-- "test"
-"test:first":
-  script:
-  - "cd first"
-  - "make test"
-  stage: "test"
-"test:second":
-  script:
-  - "cd second"
-  - "make test"
-  stage: "test"
-```
+## Usage Examples
 
-- dynamic case
+- [Simple case](doc/simple.md)
+- [Complex case](doc/complex.md)
+- [Multiple output files case](doc/multiple-output-files.md)
+- [Dynamic case](doc/dynamic.md)
 
-```sh
-jsonnet -m out -c -S --tls-str modules=a,b,c examples/dynamic.jsonnet
-```
+## GitLab CI Integration
 
-```yaml
-"build:a":
-  script:
-  - "cd a"
-  - "make test"
-  stage: "build"
-"build:b":
-  script:
-  - "cd b"
-  - "make test"
-  stage: "build"
-"build:c":
-  script:
-  - "cd c"
-  - "make test"
-  stage: "build"
-default:
-  timeout: "1h"
-stages:
-- "build"
-- "test"
-"test:a":
-  script:
-  - "cd a"
-  - "make test"
-  stage: "test"
-"test:b":
-  script:
-  - "cd b"
-  - "make test"
-  stage: "test"
-"test:c":
-  script:
-  - "cd c"
-  - "make test"
-  stage: "test"
-```
+You can integrate this library with your GitLab CI workflow to dynamically generate pipelines based on changed modules.
 
-## GitlabCI integration
+### Setup
 
-You can use this library to generate a GitlabCI pipeline by using the `jsonnet` command line tool. You can also use it in your own code by importing the library and using the functions provided.
-
-- Retrieve dependecy with [jsonnet-bundler](https://github.com/jsonnet-bundler/jsonnet-bundler)
+1. Install the dependency using [jsonnet-bundler](https://github.com/jsonnet-bundler/jsonnet-bundler):
 
 ```sh
 mkdir -p .gitlab/ci && cd .gitlab/ci
-
-jb install github.com/ziouf/jsonnet-gitlabci
+jb install github.com/ziouf/gitlabci-libsonnet
 ```
 
-- Jsonnet pipeline file
+2. Create a Jsonnet pipeline template:
 
 ```jsonnet
 // ${CI_PROJECT_DIR}/.gitlab/ci/pipeline.jsonnet
@@ -164,7 +86,7 @@ function(modules="", sep=",")
 }
 ```
 
-- Trigger a downstream pipeline dynamically generated
+3. Configure a GitLab CI pipeline to trigger dynamically generated downstream pipelines:
 
 ```yaml
 # .gitlab-ci.yml
@@ -194,10 +116,19 @@ trigger-modules:
     strategy: depend
     include: 
     # Retrieve the generated pipeline file from the job artifacts
+    # and use it as a template for the downstream pipeline
     - artifact: out/downstream-pipeline.yml
       job: prepare
     forward:
       yaml_variables: true
       pipeline_variables: true
 ```
+
+## License
+
+[Add license information if applicable]
+
+## Contributing
+
+[Add contribution guidelines if applicable]
 

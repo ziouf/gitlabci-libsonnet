@@ -1,7 +1,7 @@
-local gl = import "../gitlabci.libsonnet";
+local gl = import "../../gitlabci.libsonnet";
 
 {
-    "multi-pipeline-1.yaml": std.manifestYamlDoc(
+    "multi-pipeline-1.yaml": 
          gl.pipeline.new(
             stages=["build", "test"],
         )
@@ -14,12 +14,10 @@ local gl = import "../gitlabci.libsonnet";
                 stage="build",
                 script="make test",
             ),
-        }), 
-        indent_array_in_object=false, 
-        quote_keys=false,
-    ),
+        })
+        .toYaml(),
     
-    "multi-pipeline-2.yaml": std.manifestYamlDoc(
+    "multi-pipeline-2.yaml":
          gl.pipeline.new(
             stages=["build", "test"],
         )
@@ -32,8 +30,6 @@ local gl = import "../gitlabci.libsonnet";
                 stage="build",
                 script="make test",
             ),
-        }), 
-        indent_array_in_object=false, 
-        quote_keys=false,
-    ),
+        })
+        .toYaml(),
 }

@@ -33,6 +33,9 @@
       [if std.isArray(stages) || std.isString(stages) then 'stages']:
         if std.isArray(stages) then stages else [stages],
       
+      // Generate YAML document
+      toYaml():: std.manifestYamlDoc(self, indent_array_in_object=false, quote_keys=false),
+
       // Defaults
       //
       // Defines the default parameters for GitLab CI jobs.

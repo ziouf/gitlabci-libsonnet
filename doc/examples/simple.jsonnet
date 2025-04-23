@@ -1,7 +1,7 @@
-local gl = import "../gitlabci.libsonnet";
+local gl = import "../../gitlabci.libsonnet";
 
 {
-    "simple-pipeline.yaml": std.manifestYamlDoc(
+    "simple-pipeline.yaml":
          gl.pipeline.new(
             stages=["build", "test"],
         )
@@ -14,8 +14,6 @@ local gl = import "../gitlabci.libsonnet";
                 stage="build",
                 script="make test",
             ),
-        }), 
-        indent_array_in_object=false, 
-        quote_keys=false,
-    ),
+        })
+        .toYaml(),
 }
