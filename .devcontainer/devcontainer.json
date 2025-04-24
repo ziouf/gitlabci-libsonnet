@@ -12,6 +12,9 @@
 			]
 		}
 	},
+	"features": {
+		"ghcr.io/devcontainers-extra/features/pre-commit": {}
+	},
 	"initializeCommand": {
 		"extractGitGlobals": "git config -l --global --include > .gitconfig.global",
 		"extractGitLocals": "git config -l --local --include > .gitconfig.local"

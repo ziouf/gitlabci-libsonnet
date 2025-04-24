@@ -32,9 +32,9 @@
       },
       [if std.isArray(stages) || std.isString(stages) then 'stages']:
         if std.isArray(stages) then stages else [stages],
-      
+
       // Generate YAML document
-      toYaml():: std.manifestYamlDoc(self, indent_array_in_object=false, quote_keys=false),
+      toYaml():: std.manifestYamlDoc(self),
 
       // Defaults
       //
@@ -62,62 +62,62 @@
       withInclude(include):: self + {
         include+: if std.isArray(include) then include else [include],
       },
-      includeComponent(component, inputs={}, rules=[], integrity=null) :: self + {
+      includeComponent(component, inputs={}, rules=[], integrity=null):: self + {
         include+: [
           if std.isString(component) then
-          {
-            component: component,
-            [if std.isObject(inputs) then 'inputs']: inputs,
-            [if std.isArray(rules) then 'rules']: rules,
-            [if std.isString(integrity) then 'integrity']: integrity,
-          },
-        ]
+            {
+              component: component,
+              [if std.isObject(inputs) then 'inputs']: inputs,
+              [if std.isArray(rules) then 'rules']: rules,
+              [if std.isString(integrity) then 'integrity']: integrity,
+            },
+        ],
       },
-      includeLocal(file, inputs={}, rules=[], integrity=null) :: self + {
+      includeLocal(file, inputs={}, rules=[], integrity=null):: self + {
         include+: [
           if std.isString(file) then
-          {
-            'local': file,
-            [if std.isObject(inputs) then 'inputs']: inputs,
-            [if std.isArray(rules) then 'rules']: rules,
-            [if std.isString(integrity) then 'integrity']: integrity,
-          },
-        ]
+            {
+              'local': file,
+              [if std.isObject(inputs) then 'inputs']: inputs,
+              [if std.isArray(rules) then 'rules']: rules,
+              [if std.isString(integrity) then 'integrity']: integrity,
+            },
+        ],
       },
-      includeProject(project, file, ref=null, inputs={}, rules=[], integrity=null) :: self + {
+      includeProject(project, file, ref=null, inputs={}, rules=[], integrity=null):: self + {
         include+: [
           if std.isString(project) then
-          {
-            project: project,
-            file: if std.isArray(file) then file else [file],
-            [if std.isString(ref) then 'ref']: ref,
-            [if std.isObject(inputs) then 'inputs']: inputs,
-            [if std.isArray(rules) then 'rules']: rules,
-            [if std.isString(integrity) then 'integrity']: integrity,
-          },
-        ]
+            {
+              project: project,
+              file: if std.isArray(file) then file else [file],
+              [if std.isString(ref) then 'ref']: ref,
+              [if std.isObject(inputs) then 'inputs']: inputs,
+              [if std.isArray(rules) then 'rules']: rules,
+              [if std.isString(integrity) then 'integrity']: integrity,
+            },
+        ],
       },
-      includeRemote(remote, inputs={}, rules=[], integrity=null) :: self + {
+      includeRemote(remote, inputs={}, rules=[], integrity=null):: self + {
         include+: [
           if std.isString(remote) then
-          {
-            remote: remote,
-            [if std.isObject(inputs) then 'inputs']: inputs,
-            [if std.isArray(rules) then 'rules']: rules,
-            [if std.isString(integrity) then 'integrity']: integrity,
-          },
-        ]
+            {
+              remote: remote,
+              [if std.isObject(inputs) then 'inputs']: inputs,
+              [if std.isArray(rules) then 'rules']: rules,
+              [if std.isString(integrity) then 'integrity']: integrity,
+            },
+        ],
       },
-      includeTemplate(template, inputs={}, rules=[], integrity=null) :: self + {
+      includeTemplate(template, inputs={}, rules=[], integrity=null):: self + {
         include+: [
           if std.isString(template) then
-          {
-            template: template,
-            [if std.isObject(inputs) then 'inputs']: inputs,
-            [if std.isArray(rules) then 'rules']: rules,
-            [if std.isString(integrity) then 'integrity']: integrity,
-          },
-        ]
+            {
+              template: template,
+              [if std.isObject(inputs) then 'inputs']: inputs,
+              [if std.isArray(rules) then 'rules']: rules,
+              [if std.isString(integrity) then 'integrity']: integrity,
+            },
+        ],
       },
       //
       // Stages
@@ -305,7 +305,7 @@
         before_script+: if std.isArray(script) then script else [script],
       },
       prependBeforeScript(script):: {
-        before_script: if std.isArray(script) then std.flattenArrays(script, self.before_script) else std.flattenArrays([script], self.before_script),
+        before_script: if std.isArray(script) then script else std[script],
       } + self,
       withScript(script):: self + {
         script+: if std.isArray(script) then script else [script],
@@ -317,7 +317,7 @@
         script+: if std.isArray(script) then script else [script],
       },
       prependScript(script):: {
-        script: if std.isArray(script) then std.flattenArrays(script, self.script) else std.flattenArrays([script], self.script),
+        script: if std.isArray(script) then script else [script],
       } + self,
       withAfterScript(script):: self + {
         after_script+: if std.isArray(script) then script else [script],
@@ -329,7 +329,7 @@
         after_script+: if std.isArray(script) then script else [script],
       },
       prependAfterScript(script):: {
-        after_script: if std.isArray(script) then std.flattenArrays(script, self.after_script) else std.flattenArrays([script], self.after_script),
+        after_script: if std.isArray(script) then script else [script],
       } + self,
       withAllowFailure(allow=true, exit_codes=null):: self + {
         allow_failure: if std.isArray(exit_codes) then { exit_codes: exit_codes } else allow,
