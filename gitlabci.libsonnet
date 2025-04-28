@@ -264,8 +264,11 @@
           entrypoint: if std.isArray(entrypoint) then entrypoint else [entrypoint],
         },
       },
-      withRetry():: self + {
-        retry: 2,
+      setRetry(retry):: self + {
+        retry: retry,
+      },
+      withRetry(retry=2):: self + {
+        retry: retry,
       },
       withVariables(variables):: self + {
         variables+: variables,
