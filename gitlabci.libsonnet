@@ -351,8 +351,18 @@
       },
 
       withArtifacts(artifacts):: self + { artifacts: artifacts },
-      withCache(cache):: self + { cache: cache },
-      withHooks(hooks):: self + { hooks: hooks },
+      setCache(cache):: self + {
+        cache: if std.isArray(cache) then cache else [cache],
+      },
+      withCache(cache):: self + {
+        cache+: if std.isArray(cache) then cache else [cache],
+      },
+      appendCache(cache):: self + {
+        cache+: if std.isArray(cache) then cache else [cache],
+      },
+      withHooks(hooks):: self + {
+        hooks+: hooks,
+      },
     },
     artifacts:: {
       new(name=null, expire_in=null, when='on_success', paths=null):: {
