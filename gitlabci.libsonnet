@@ -134,6 +134,13 @@
       prependStages(stages):: {
         stages: if std.isArray(stages) then stages else [stages],
       } + self,
+      // Append jobs to stage. Creates the stage if it doesn't exist.
+      withStage(stage, jobs=[]):: self + {
+        stages: std.set(self.stages + [stage], function(s) s),
+      } + {
+        [j]+: j.withStage(stage)
+        for j in jobs
+      },
       //
       // Workflows
       //
@@ -239,14 +246,17 @@
   // Jobs
   //
   job:: {
-    new(stage, script=null, retry=false, tags=null):: {
-      stage: stage,
+    new(stage=null, script=null, retry=false, tags=null):: {
+      [if std.isString(stage) then 'stage']: stage,
       [if retry then 'retry']: 2,
       [if std.isArray(tags) || std.isString(tags) then 'tags']:
         if std.isArray(tags) then tags else [tags],
       [if std.isArray(script) || std.isString(script) then 'script']:
         if std.isArray(script) then script else [script],
 
+      withStage(stage):: self + {
+        stage: stage,
+      },
       withTag(tags):: self + {
         tags+: if std.isArray(tags) then tags else [tags],
       },
@@ -432,6 +442,7 @@
         when: when,
         policy: policy,
         [if std.isString(key) then 'key']: key,
+        [if std.isObject(key) then 'key']: key,
 
         withPath(path):: self + {
           paths+: if std.isArray(path) then path else [path],
