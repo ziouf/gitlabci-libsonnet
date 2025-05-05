@@ -239,12 +239,17 @@
   // Jobs
   //
   job:: {
-    new(stage, script=null, retry=false):: {
+    new(stage, script=null, retry=false, tags=null):: {
       stage: stage,
+      [if retry then 'retry']: 2,
+      [if std.isArray(tags) || std.isString(tags) then 'tags']:
+        if std.isArray(tags) then tags else [tags],
       [if std.isArray(script) || std.isString(script) then 'script']:
         if std.isArray(script) then script else [script],
-      [if retry then 'retry']: 2,
 
+      withTag(tags):: self + {
+        tags+: if std.isArray(tags) then tags else [tags],
+      },
       withExtends(names):: self + {
         extends+: if std.isArray(names) then names else [names],
       },
