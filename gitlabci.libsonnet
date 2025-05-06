@@ -134,13 +134,25 @@
       prependStages(stages):: {
         stages: if std.isArray(stages) then stages else [stages],
       } + self,
-      // Append jobs to stage. Creates the stage if it doesn't exist.
-      withStage(stage, jobs=[]):: self + {
-        stages: std.set(self.stages + [stage], function(s) s),
-      } + {
-        [j]+: j.withStage(stage)
-        for j in jobs
-      },
+      /*
+        Append jobs to stage. Creates the stage if it doesn't exist.
+
+        Example:
+          withStage('build', jobs={
+            'job-name': job.new(script='echo "Hello World"'),
+          })
+      */
+      withStage(stage, jobs={}):: (
+        if std.assertEqual(std.type(stage), 'string') then
+          local stages = std.get(self, 'stages', default=[]) + if std.isString(stage) then [stage];
+          self + {
+            stages: stages,
+          } + {
+            [stage + ':' + k]: jobs[k].withStage(stage)
+            for k in std.objectFieldsEx(jobs, true)
+          }
+        else self
+      ),
       //
       // Workflows
       //
@@ -442,7 +454,10 @@
         when: when,
         policy: policy,
         [if std.isString(key) then 'key']: key,
-        [if std.isObject(key) then 'key']: key,
+        [if std.isObject(key) then 'key']: {
+          [if 'files' in key then 'files']: if std.isArray(key.files) then key.files else [key.files],
+          [if 'prefix' in key && std.isString(key.prefix) then 'prefix']: key.prefix,
+        },
 
         withPath(path):: self + {
           paths+: if std.isArray(path) then path else [path],

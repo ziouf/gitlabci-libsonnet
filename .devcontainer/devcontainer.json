@@ -9,7 +9,10 @@
 				"GitHub.copilot",
 				"GitHub.copilot-chat",
 				"Grafana.vscode-jsonnet"
-			]
+			],
+			"settings": {
+				"jsonnet.languageServer.enableAutoUpdate": true
+			}
 		}
 	},
 	"features": {
@@ -19,5 +22,11 @@
 		"extractGitGlobals": "git config -l --global --include > .gitconfig.global",
 		"extractGitLocals": "git config -l --local --include > .gitconfig.local"
 	},
-	"postAttachCommand": "/bin/bash .devcontainer/post-attach.sh"
+	"postCreateCommand": {
+		// "downloadJsonnetLanguageServer": "mkdir -p $HOME/.vscode-server/data/User/globalStorage/grafana.vscode-jsonnet/bin/ && curl -o $HOME/.vscode-server/data/User/globalStorage/grafana.vscode-jsonnet/bin/jsonnet-language-server -sSL https://github.com/grafana/jsonnet-language-server/releases/download/v0.15.0/jsonnet-language-server_0.15.0_linux_amd64"
+	},
+	"postStartCommand": {},
+	"postAttachCommand": {
+		"gitConfig": "/bin/bash .devcontainer/post-attach.sh"
+	}
 }
